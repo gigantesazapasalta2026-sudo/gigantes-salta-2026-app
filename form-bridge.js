@@ -1,4 +1,4 @@
-// form-bridge.js — Gigantes de Azapa Salta 2026 — VERSION FINAL NUEVO REPO
+// form-bridge.js — Gigantes de Azapa Salta 2026 — VERSION DEFINITIVA
 const GIGANTES = {
   LOGO: "https://lh3.googleusercontent.com/d/1xXGqa0I_sw6C6QPcD_G-1fblDQlr9-Ae",
   BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026-app/",
@@ -8,9 +8,6 @@ const GIGANTES = {
     m10m12b:"https://lh3.googleusercontent.com/d/1udE1rXMtgwCiLoupCF_QVo9ICkGuDCaE",
     entrenamiento:"https://lh3.googleusercontent.com/d/1kkrcFg-Xgh9OoItl5VuZq-Plf5Sfr6AL",
     entrenadores:"https://lh3.googleusercontent.com/d/1_Q_4Sx1NBksBFpPNEA2wYMusz5OHFUlM",
-    entrenador1:"https://lh3.googleusercontent.com/d/1U6bC9wFFLcp6Y3SQeMySRBPlo8sh4Wh3",
-    entrenador2:"https://lh3.googleusercontent.com/d/1KizLAGY__bH-DDvyytFe04_T9vL8HgbF",
-    entrenador3:"https://lh3.googleusercontent.com/d/1kYRvTdeB8VAmIh0Pj8M6OwulU3SRMw_3",
     ninos2:"https://lh3.googleusercontent.com/d/1xV3V7SsFf0vFQHFeZyYR-QaQU3P6SWHs",
     ninos:"https://lh3.googleusercontent.com/d/12gdAbF7-b2U368QWZl-wkn_452w9i91G",
     m14:"https://lh3.googleusercontent.com/d/148VaNKj5RitxyA_-vt367D95yzbqgdQr",
@@ -23,7 +20,7 @@ const GIGANTES = {
     "inscripcion":"ninos2","documentos_carga":"entrenadores","mi_estado":"m10m12",
     "actividades":"tercer","bingos":"fogata","aportes":"estadio","sponsors":"playa",
     "avance":"estadio","galeria_club":"entrenadores","itinerario":"ninos2",
-    "merchandising":"m10m12","directiva":"entrenadores","default":"ninos2"
+    "merchandising":"m10m12","directiva":"entrenadores","index":"ninos2","default":"ninos2"
   }
 };
 
@@ -60,32 +57,67 @@ function injectTopbar(){
 function injectHeroBg(){
   const hero=document.querySelector('.hero,header.hero,.hero-header');
   if(!hero)return;
-  const page=location.pathname.split('/').pop().replace(/\.html?$/,'');
+  const page=location.pathname.split('/').pop().replace(/\.html?$/,'')||'index';
   const fotoKey=GIGANTES.PAGINA_FOTO[page]||'default';
-  const fotoUrl=GIGANTES.FOTOS[GIGANTES.PAGINA_FOTO[fotoKey]]||GIGANTES.FOTOS.ninos2;
-  hero.style.position='relative';hero.style.overflow='hidden';
-  if(!hero.querySelector('.gb-video-wrap')){
-    const wrap=document.createElement('div');wrap.className='gb-video-wrap';
-    wrap.style.cssText='position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none';
+  const fotoUrl=GIGANTES.FOTOS[fotoKey]||GIGANTES.FOTOS.ninos2;
+
+  // Aplicar foto de fondo DIRECTAMENTE como CSS — siempre funciona
+  hero.style.position='relative';
+  hero.style.overflow='hidden';
+  hero.style.minHeight=hero.style.minHeight||'54vh';
+
+  // Fondo con foto real
+  if(!hero.querySelector('.gb-bg')){
+    const bg=document.createElement('div');
+    bg.className='gb-bg';
+    bg.style.cssText=`position:absolute;inset:0;z-index:0;background-image:url("${fotoUrl}");background-size:cover;background-position:center;opacity:.5;`;
+    
+    const overlay=document.createElement('div');
+    overlay.style.cssText='position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,15,20,.4) 0%,rgba(11,15,20,.7) 55%,rgba(11,15,20,.98) 100%)';
+    
+    hero.insertBefore(overlay,hero.firstChild);
+    hero.insertBefore(bg,hero.firstChild);
+
+    // Video encima de la foto (si el navegador lo soporta)
     const vid=document.createElement('video');
     vid.autoplay=true;vid.muted=true;vid.loop=true;vid.playsInline=true;
-    vid.style.cssText='width:100%;height:100%;object-fit:cover;opacity:.4';
+    vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;opacity:.35;';
     vid.innerHTML=`<source src="${GIGANTES.FOTOS.video}" type="video/mp4">`;
-    vid.onerror=()=>{wrap.style.backgroundImage=`url("${fotoUrl}")`;wrap.style.backgroundSize='cover';wrap.style.backgroundPosition='center';vid.remove();};
-    const ov=document.createElement('div');
-    ov.style.cssText='position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,15,20,.3) 0%,rgba(11,15,20,.65) 55%,rgba(11,15,20,.97) 100%)';
-    wrap.appendChild(vid);wrap.appendChild(ov);
-    hero.insertBefore(wrap,hero.firstChild);
-    Array.from(hero.children).forEach(c=>{if(c!==wrap&&!c.style.zIndex){c.style.position='relative';c.style.zIndex='1';}});
+    hero.insertBefore(vid,hero.firstChild);
+
+    // Elevar contenido
+    Array.from(hero.children).forEach(c=>{
+      if(!['gb-bg','VIDEO'].includes(c.className?.toUpperCase?.())||c.tagName==='VIDEO'){
+        if(!c.style.zIndex&&c!==bg&&c!==overlay&&c!==vid){
+          c.style.position='relative';
+          c.style.zIndex='3';
+        }
+      }
+    });
   }
   hero.style.color='#fff';
 }
 
 function fixLogos(){
-  const F={'m10m12.jpg':GIGANTES.FOTOS.m10m12,'entrenamiento.jpg':GIGANTES.FOTOS.entrenamiento,'Entrenadores.jpg':GIGANTES.FOTOS.entrenadores,'Niños reunidos 2.jpg':GIGANTES.FOTOS.ninos2,'Niños reunidos.jpg':GIGANTES.FOTOS.ninos,'m14.jpg':GIGANTES.FOTOS.m14,'3er tiempo.jpg':GIGANTES.FOTOS.tercer,'fogata formando club.jpg':GIGANTES.FOTOS.fogata,'Rugby estadio.jpg':GIGANTES.FOTOS.estadio,'rugby playa.jpg':GIGANTES.FOTOS.playa};
+  const F={
+    'm10m12.jpg':GIGANTES.FOTOS.m10m12,
+    'entrenamiento.jpg':GIGANTES.FOTOS.entrenamiento,
+    'Entrenadores.jpg':GIGANTES.FOTOS.entrenadores,
+    'Niños reunidos 2.jpg':GIGANTES.FOTOS.ninos2,
+    'Niños reunidos.jpg':GIGANTES.FOTOS.ninos,
+    'm14.jpg':GIGANTES.FOTOS.m14,
+    '3er tiempo.jpg':GIGANTES.FOTOS.tercer,
+    'fogata formando club.jpg':GIGANTES.FOTOS.fogata,
+    'Rugby estadio.jpg':GIGANTES.FOTOS.estadio,
+    'rugby playa.jpg':GIGANTES.FOTOS.playa
+  };
   document.querySelectorAll('img').forEach(img=>{
     const src=img.getAttribute('src')||'';
-    if(src.includes('01_APP_SITIO_WEB')||src.includes('logo-gigantes')){img.src=GIGANTES.LOGO;img.style.cssText+=';width:42px;height:42px;border-radius:50%;object-fit:cover;background:#fff;padding:2px';return;}
+    if(src.includes('01_APP_SITIO_WEB')||src.includes('logo-gigantes')){
+      img.src=GIGANTES.LOGO;
+      img.style.cssText+=';width:42px;height:42px;border-radius:50%;object-fit:cover;background:#fff;padding:2px';
+      return;
+    }
     const fn=decodeURIComponent(src.split('/').pop());
     if(F[fn]&&!src.startsWith('https://lh3'))img.src=F[fn];
   });
