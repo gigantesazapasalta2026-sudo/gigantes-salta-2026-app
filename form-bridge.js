@@ -1,20 +1,20 @@
-// form-bridge.js — Gigantes de Azapa Salta 2026 — VERSION DEFINITIVA
+// form-bridge.js — Gigantes de Azapa Salta 2026 — FOTOS LOCALES
 const GIGANTES = {
-  LOGO: "https://lh3.googleusercontent.com/d/1xXGqa0I_sw6C6QPcD_G-1fblDQlr9-Ae",
+  LOGO: "LOGO GIGANTES.jpeg",
   BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026-app/",
   FOTOS: {
-    video:"https://lh3.googleusercontent.com/d/1gWdHZ5Kzy02qj6sXE5jR7t2-3oJqkET0",
-    m10m12:"https://lh3.googleusercontent.com/d/1KIAs8jwr5kv6XfsfcRulr6jjIvHaeU37",
-    m10m12b:"https://lh3.googleusercontent.com/d/1udE1rXMtgwCiLoupCF_QVo9ICkGuDCaE",
-    entrenamiento:"https://lh3.googleusercontent.com/d/1kkrcFg-Xgh9OoItl5VuZq-Plf5Sfr6AL",
-    entrenadores:"https://lh3.googleusercontent.com/d/1_Q_4Sx1NBksBFpPNEA2wYMusz5OHFUlM",
-    ninos2:"https://lh3.googleusercontent.com/d/1xV3V7SsFf0vFQHFeZyYR-QaQU3P6SWHs",
-    ninos:"https://lh3.googleusercontent.com/d/12gdAbF7-b2U368QWZl-wkn_452w9i91G",
-    m14:"https://lh3.googleusercontent.com/d/148VaNKj5RitxyA_-vt367D95yzbqgdQr",
-    tercer:"https://lh3.googleusercontent.com/d/1AUJVv1Vs_PxBHsQXWy2IaOaePhIZSZm2",
-    fogata:"https://lh3.googleusercontent.com/d/1pe5-hfPw4Ed5PkoRGg80pBlzWmoaN1UK",
-    estadio:"https://lh3.googleusercontent.com/d/1sM21bwM6ecxiCzx0hsn8qhnjPctsQcuJ",
-    playa:"https://lh3.googleusercontent.com/d/1GwljunkxpOP0Er6a6IkRmC5AgFL7u9Ss"
+    video: "niños llegando a jugar.mov",
+    m10m12: "m10m12.jpg",
+    m10m12b: "1 m10m12.jpg",
+    entrenamiento: "entrenamiento.jpg",
+    entrenadores: "Entrenadores.jpg",
+    ninos2: "Niños reunidos 2.jpg",
+    ninos: "Niños reunidos.jpg",
+    m14: "m14.jpg",
+    tercer: "3er tiempo.jpg",
+    fogata: "fogata formando club.jpg",
+    estadio: "Rugby estadio.jpg",
+    playa: "rugby playa.jpg"
   },
   PAGINA_FOTO:{
     "inscripcion":"ninos2","documentos_carga":"entrenadores","mi_estado":"m10m12",
@@ -32,7 +32,7 @@ function injectTopbar(){
   const B=GIGANTES.BASE;
   const bar=document.createElement('header');
   bar.id='gb-topbar';
-  bar.innerHTML=`<a class="gb-brand" href="${B}index.html"><img src="${GIGANTES.LOGO}" alt="Gigantes de Azapa" onerror="this.src='https://placehold.co/42/f36b21/fff?text=G'"><div><small>Gigantes de Azapa</small><span>Salta 2026</span></div></a><button class="gb-btn" onclick="document.getElementById('gb-drawer').classList.toggle('open')">☰</button>`;
+  bar.innerHTML=`<a class="gb-brand" href="${B}index.html"><img src="LOGO GIGANTES.jpeg" alt="Gigantes de Azapa" onerror="this.src='https://placehold.co/42/f36b21/fff?text=G'"><div><small>Gigantes de Azapa</small><span>Salta 2026</span></div></a><button class="gb-btn" onclick="document.getElementById('gb-drawer').classList.toggle('open')">☰</button>`;
   document.body.insertBefore(bar,document.body.firstChild);
   const nav=document.createElement('nav');
   nav.id='gb-drawer';
@@ -59,39 +59,37 @@ function injectHeroBg(){
   if(!hero)return;
   const page=location.pathname.split('/').pop().replace(/\.html?$/,'')||'index';
   const fotoKey=GIGANTES.PAGINA_FOTO[page]||'default';
-  const fotoUrl=GIGANTES.FOTOS[fotoKey]||GIGANTES.FOTOS.ninos2;
+  const fotoFile=GIGANTES.FOTOS[fotoKey]||GIGANTES.FOTOS.ninos2;
 
-  // Aplicar foto de fondo DIRECTAMENTE como CSS — siempre funciona
   hero.style.position='relative';
   hero.style.overflow='hidden';
   hero.style.minHeight=hero.style.minHeight||'54vh';
 
-  // Fondo con foto real
   if(!hero.querySelector('.gb-bg')){
+    // Foto de fondo local — siempre funciona
     const bg=document.createElement('div');
     bg.className='gb-bg';
-    bg.style.cssText=`position:absolute;inset:0;z-index:0;background-image:url("${fotoUrl}");background-size:cover;background-position:center;opacity:.5;`;
-    
-    const overlay=document.createElement('div');
-    overlay.style.cssText='position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,15,20,.4) 0%,rgba(11,15,20,.7) 55%,rgba(11,15,20,.98) 100%)';
-    
-    hero.insertBefore(overlay,hero.firstChild);
-    hero.insertBefore(bg,hero.firstChild);
+    bg.style.cssText=`position:absolute;inset:0;z-index:0;background-image:url("${encodeURI(fotoFile)}");background-size:cover;background-position:center;`;
 
-    // Video encima de la foto (si el navegador lo soporta)
+    // Overlay oscuro
+    const overlay=document.createElement('div');
+    overlay.style.cssText='position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,15,20,.35) 0%,rgba(11,15,20,.7) 55%,rgba(11,15,20,.98) 100%)';
+
+    // Video local encima
     const vid=document.createElement('video');
     vid.autoplay=true;vid.muted=true;vid.loop=true;vid.playsInline=true;
-    vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;opacity:.35;';
-    vid.innerHTML=`<source src="${GIGANTES.FOTOS.video}" type="video/mp4">`;
+    vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;opacity:.4;';
+    vid.innerHTML=`<source src="${encodeURI(GIGANTES.FOTOS.video)}" type="video/mp4">`;
+
+    hero.insertBefore(overlay,hero.firstChild);
     hero.insertBefore(vid,hero.firstChild);
+    hero.insertBefore(bg,hero.firstChild);
 
     // Elevar contenido
     Array.from(hero.children).forEach(c=>{
-      if(!['gb-bg','VIDEO'].includes(c.className?.toUpperCase?.())||c.tagName==='VIDEO'){
-        if(!c.style.zIndex&&c!==bg&&c!==overlay&&c!==vid){
-          c.style.position='relative';
-          c.style.zIndex='3';
-        }
+      if(c!==bg&&c!==overlay&&c!==vid){
+        c.style.position='relative';
+        c.style.zIndex='3';
       }
     });
   }
@@ -99,27 +97,12 @@ function injectHeroBg(){
 }
 
 function fixLogos(){
-  const F={
-    'm10m12.jpg':GIGANTES.FOTOS.m10m12,
-    'entrenamiento.jpg':GIGANTES.FOTOS.entrenamiento,
-    'Entrenadores.jpg':GIGANTES.FOTOS.entrenadores,
-    'Niños reunidos 2.jpg':GIGANTES.FOTOS.ninos2,
-    'Niños reunidos.jpg':GIGANTES.FOTOS.ninos,
-    'm14.jpg':GIGANTES.FOTOS.m14,
-    '3er tiempo.jpg':GIGANTES.FOTOS.tercer,
-    'fogata formando club.jpg':GIGANTES.FOTOS.fogata,
-    'Rugby estadio.jpg':GIGANTES.FOTOS.estadio,
-    'rugby playa.jpg':GIGANTES.FOTOS.playa
-  };
   document.querySelectorAll('img').forEach(img=>{
     const src=img.getAttribute('src')||'';
-    if(src.includes('01_APP_SITIO_WEB')||src.includes('logo-gigantes')){
-      img.src=GIGANTES.LOGO;
+    if(src.includes('01_APP_SITIO_WEB')||src.includes('logo-gigantes')||src.includes('lh3.google')){
+      img.src='LOGO GIGANTES.jpeg';
       img.style.cssText+=';width:42px;height:42px;border-radius:50%;object-fit:cover;background:#fff;padding:2px';
-      return;
     }
-    const fn=decodeURIComponent(src.split('/').pop());
-    if(F[fn]&&!src.startsWith('https://lh3'))img.src=F[fn];
   });
 }
 
