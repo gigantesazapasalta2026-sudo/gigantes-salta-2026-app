@@ -1,7 +1,7 @@
-// form-bridge.js — Gigantes de Azapa Salta 2026 — VERSION FINAL
+// form-bridge.js — Gigantes de Azapa Salta 2026 — VERSION FINAL NUEVO REPO
 const GIGANTES = {
   LOGO: "https://lh3.googleusercontent.com/d/1xXGqa0I_sw6C6QPcD_G-1fblDQlr9-Ae",
-  BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026-app/,
+  BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026-app/",
   FOTOS: {
     video:"https://lh3.googleusercontent.com/d/1gWdHZ5Kzy02qj6sXE5jR7t2-3oJqkET0",
     m10m12:"https://lh3.googleusercontent.com/d/1KIAs8jwr5kv6XfsfcRulr6jjIvHaeU37",
@@ -22,9 +22,8 @@ const GIGANTES = {
   PAGINA_FOTO:{
     "inscripcion":"ninos2","documentos_carga":"entrenadores","mi_estado":"m10m12",
     "actividades":"tercer","bingos":"fogata","aportes":"estadio","sponsors":"playa",
-    "avance":"estadio","galeria_club":"entrenadores","manual_uso":"m10m12",
-    "itinerario":"ninos2","merchandising":"m10m12","directiva":"entrenadores",
-    "default":"ninos2"
+    "avance":"estadio","galeria_club":"entrenadores","itinerario":"ninos2",
+    "merchandising":"m10m12","directiva":"entrenadores","default":"ninos2"
   }
 };
 
@@ -40,7 +39,20 @@ function injectTopbar(){
   document.body.insertBefore(bar,document.body.firstChild);
   const nav=document.createElement('nav');
   nav.id='gb-drawer';
-  nav.innerHTML=`<div class="gb-dh"><strong>Menú</strong><button class="gb-x" onclick="document.getElementById('gb-drawer').classList.remove('open')">✕</button></div><a href="${B}inscripcion.html">🏉 Inscribir jugador</a><a href="${B}documentos_carga.html">📄 Subir documentos</a><a href="${B}mi_estado.html">🔍 Mi estado</a><a href="${B}itinerario.html">🗓 Itinerario</a><a href="${B}actividades.html">🤝 Actividades</a><a href="${B}aportes.html">💛 Hacer un aporte</a><a href="${B}merchandising.html">👕 Merchandising</a><a href="${B}bingos.html">🎰 Bingos</a><a href="${B}sponsors.html">🏢 Sponsors</a><a href="${B}avance.html">📊 Avance de meta</a><a href="${B}galeria_club.html">📸 Galería</a><a href="${B}index.html">🏠 Portada</a><a href="${B}directiva.html">🔐 Directiva</a>`;
+  nav.innerHTML=`<div class="gb-dh"><strong>Menú</strong><button class="gb-x" onclick="document.getElementById('gb-drawer').classList.remove('open')">✕</button></div>
+    <a href="${B}inscripcion.html">🏉 Inscribir jugador</a>
+    <a href="${B}documentos_carga.html">📄 Subir documentos</a>
+    <a href="${B}mi_estado.html">🔍 Mi estado</a>
+    <a href="${B}itinerario.html">🗓 Itinerario</a>
+    <a href="${B}actividades.html">🤝 Actividades</a>
+    <a href="${B}aportes.html">💛 Hacer un aporte</a>
+    <a href="${B}merchandising.html">👕 Merchandising</a>
+    <a href="${B}bingos.html">🎰 Bingos</a>
+    <a href="${B}sponsors.html">🏢 Sponsors</a>
+    <a href="${B}avance.html">📊 Avance de meta</a>
+    <a href="${B}galeria_club.html">📸 Galería</a>
+    <a href="${B}directiva.html">🔐 Directiva</a>
+    <a href="${B}index.html">🏠 Portada</a>`;
   document.body.appendChild(nav);
   document.addEventListener('click',e=>{const d=document.getElementById('gb-drawer');if(d&&!d.contains(e.target)&&!e.target.classList.contains('gb-btn'))d.classList.remove('open');});
 }
