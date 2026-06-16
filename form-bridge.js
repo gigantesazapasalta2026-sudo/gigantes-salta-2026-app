@@ -1,7 +1,7 @@
 // form-bridge.js — Gigantes de Azapa Salta 2026 — VERSION FINAL
 const GIGANTES = {
   LOGO: "https://lh3.googleusercontent.com/d/1xXGqa0I_sw6C6QPcD_G-1fblDQlr9-Ae",
-  BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026-app/",
+  BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026-app/,
   FOTOS: {
     video:"https://lh3.googleusercontent.com/d/1gWdHZ5Kzy02qj6sXE5jR7t2-3oJqkET0",
     m10m12:"https://lh3.googleusercontent.com/d/1KIAs8jwr5kv6XfsfcRulr6jjIvHaeU37",
