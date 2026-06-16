@@ -1,7 +1,7 @@
-// form-bridge.js — Gigantes de Azapa Salta 2026 — REVISION FINAL
+// form-bridge.js — Gigantes de Azapa Salta 2026 — VERSION FINAL
 const GIGANTES = {
   LOGO: "https://lh3.googleusercontent.com/d/1xXGqa0I_sw6C6QPcD_G-1fblDQlr9-Ae",
-  BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026/APP_PUBLICA_GIGANTES_AZAPA/",
+  BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026-app/",
   FOTOS: {
     video:"https://lh3.googleusercontent.com/d/1gWdHZ5Kzy02qj6sXE5jR7t2-3oJqkET0",
     m10m12:"https://lh3.googleusercontent.com/d/1KIAs8jwr5kv6XfsfcRulr6jjIvHaeU37",
@@ -23,9 +23,11 @@ const GIGANTES = {
     "inscripcion":"ninos2","documentos_carga":"entrenadores","mi_estado":"m10m12",
     "actividades":"tercer","bingos":"fogata","aportes":"estadio","sponsors":"playa",
     "avance":"estadio","galeria_club":"entrenadores","manual_uso":"m10m12",
-    "itinerario":"ninos2","merchandising":"m10m12","default":"ninos2"
+    "itinerario":"ninos2","merchandising":"m10m12","directiva":"entrenadores",
+    "default":"ninos2"
   }
 };
+
 function injectTopbar(){
   if(document.getElementById('gb-topbar'))return;
   const css=document.createElement('style');
@@ -38,10 +40,11 @@ function injectTopbar(){
   document.body.insertBefore(bar,document.body.firstChild);
   const nav=document.createElement('nav');
   nav.id='gb-drawer';
-  nav.innerHTML=`<div class="gb-dh"><strong>Menú</strong><button class="gb-x" onclick="document.getElementById('gb-drawer').classList.remove('open')">✕</button></div><a href="${B}inscripcion.html">🏉 Inscribir jugador</a><a href="${B}documentos_carga.html">📄 Subir documentos</a><a href="${B}mi_estado.html">🔍 Mi estado</a><a href="${B}itinerario.html">🗓 Itinerario</a><a href="${B}actividades.html">🤝 Actividades</a><a href="${B}aportes.html">💛 Hacer un aporte</a><a href="${B}merchandising.html">👕 Merchandising</a><a href="${B}bingos.html">🎰 Bingos</a><a href="${B}sponsors.html">🏢 Sponsors</a><a href="${B}avance.html">📊 Avance de meta</a><a href="${B}galeria_club.html">📸 Galería</a><a href="${B}index.html">🏠 Portada</a>`;
+  nav.innerHTML=`<div class="gb-dh"><strong>Menú</strong><button class="gb-x" onclick="document.getElementById('gb-drawer').classList.remove('open')">✕</button></div><a href="${B}inscripcion.html">🏉 Inscribir jugador</a><a href="${B}documentos_carga.html">📄 Subir documentos</a><a href="${B}mi_estado.html">🔍 Mi estado</a><a href="${B}itinerario.html">🗓 Itinerario</a><a href="${B}actividades.html">🤝 Actividades</a><a href="${B}aportes.html">💛 Hacer un aporte</a><a href="${B}merchandising.html">👕 Merchandising</a><a href="${B}bingos.html">🎰 Bingos</a><a href="${B}sponsors.html">🏢 Sponsors</a><a href="${B}avance.html">📊 Avance de meta</a><a href="${B}galeria_club.html">📸 Galería</a><a href="${B}index.html">🏠 Portada</a><a href="${B}directiva.html">🔐 Directiva</a>`;
   document.body.appendChild(nav);
   document.addEventListener('click',e=>{const d=document.getElementById('gb-drawer');if(d&&!d.contains(e.target)&&!e.target.classList.contains('gb-btn'))d.classList.remove('open');});
 }
+
 function injectHeroBg(){
   const hero=document.querySelector('.hero,header.hero,.hero-header');
   if(!hero)return;
@@ -56,14 +59,16 @@ function injectHeroBg(){
     vid.autoplay=true;vid.muted=true;vid.loop=true;vid.playsInline=true;
     vid.style.cssText='width:100%;height:100%;object-fit:cover;opacity:.4';
     vid.innerHTML=`<source src="${GIGANTES.FOTOS.video}" type="video/mp4">`;
-    vid.onerror=()=>{wrap.style.backgroundImage=`url("${fotoUrl}")`;wrap.style.backgroundSize='cover';vid.remove();};
+    vid.onerror=()=>{wrap.style.backgroundImage=`url("${fotoUrl}")`;wrap.style.backgroundSize='cover';wrap.style.backgroundPosition='center';vid.remove();};
     const ov=document.createElement('div');
     ov.style.cssText='position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,15,20,.3) 0%,rgba(11,15,20,.65) 55%,rgba(11,15,20,.97) 100%)';
-    wrap.appendChild(vid);wrap.appendChild(ov);hero.insertBefore(wrap,hero.firstChild);
+    wrap.appendChild(vid);wrap.appendChild(ov);
+    hero.insertBefore(wrap,hero.firstChild);
     Array.from(hero.children).forEach(c=>{if(c!==wrap&&!c.style.zIndex){c.style.position='relative';c.style.zIndex='1';}});
   }
   hero.style.color='#fff';
 }
+
 function fixLogos(){
   const F={'m10m12.jpg':GIGANTES.FOTOS.m10m12,'entrenamiento.jpg':GIGANTES.FOTOS.entrenamiento,'Entrenadores.jpg':GIGANTES.FOTOS.entrenadores,'Niños reunidos 2.jpg':GIGANTES.FOTOS.ninos2,'Niños reunidos.jpg':GIGANTES.FOTOS.ninos,'m14.jpg':GIGANTES.FOTOS.m14,'3er tiempo.jpg':GIGANTES.FOTOS.tercer,'fogata formando club.jpg':GIGANTES.FOTOS.fogata,'Rugby estadio.jpg':GIGANTES.FOTOS.estadio,'rugby playa.jpg':GIGANTES.FOTOS.playa};
   document.querySelectorAll('img').forEach(img=>{
@@ -73,6 +78,7 @@ function fixLogos(){
     if(F[fn]&&!src.startsWith('https://lh3'))img.src=F[fn];
   });
 }
+
 async function sendToGigantes(data){
   const url=window.GIGANTES_APPS_SCRIPT_URL;
   if(!url||url.includes('PEGAR'))return{ok:false,configured:false};
@@ -87,6 +93,7 @@ async function sendToGigantes(data){
     s.src=u.toString();document.body.appendChild(s);
   });
 }
+
 function init(){injectTopbar();injectHeroBg();fixLogos();}
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 window.addEventListener('load',fixLogos);
