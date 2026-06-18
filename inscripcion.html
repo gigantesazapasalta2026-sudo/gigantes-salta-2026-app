@@ -32,6 +32,24 @@
     button:hover{background:#c2410c}
     button.sec{background:#111827}
     .result{margin-top:16px;border-radius:10px;padding:16px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;display:none;line-height:1.6}
+
+    /* CAJA EDAD - toggle adulto responsable */
+    .edad-box{background:#eff6ff;border:2px solid #3b82f6;border-radius:10px;padding:16px;margin-bottom:16px}
+    .edad-box label{color:#1e3a8a}
+
+    /* TOGGLE CHILE RUGBY */
+    .toggle-box{background:#fef3ec;border:2px solid #f36b21;border-radius:10px;padding:18px;margin-bottom:14px}
+    .toggle-box h3{margin:0 0 10px;font-size:.95rem;color:#c2410c;display:flex;align-items:center;gap:8px}
+    .toggle-options{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .toggle-opt{flex:1;min-width:140px;border:2px solid #d1d5db;border-radius:8px;padding:12px;text-align:center;cursor:pointer;font-weight:800;font-size:.85rem;background:#fff;transition:.15s}
+    .toggle-opt.active-yes{border-color:#10b981;background:#ecfdf5;color:#065f46}
+    .toggle-opt.active-no{border-color:#ef4444;background:#fef2f2;color:#991b1b}
+    .toggle-opt:hover{border-color:#9ca3af}
+    .link-inscribir{display:none;text-align:center;margin-top:8px}
+    .link-inscribir.show{display:block}
+    .link-inscribir a{display:inline-flex;align-items:center;gap:6px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:8px;padding:9px 18px;font-weight:900;font-size:.85rem}
+    .oculto{display:none!important}
+
     @media(max-width:640px){.form-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -39,7 +57,7 @@
 <section class="hero">
   <div class="hero-content">
     <h1>Inscripción <em>jugador</em></h1>
-    <p class="lead">Registra los datos del jugador y del adulto responsable para participar en la Gira Gigantes de Azapa Salta 2026.</p>
+    <p class="lead">Registra los datos para participar en la Gira Gigantes de Azapa Salta 2026.</p>
   </div>
 </section>
 <div class="main">
@@ -47,16 +65,16 @@
     <div class="info-box">
       📅 <strong>Gira:</strong> 26 al 30 de agosto 2026<br>
       🚌 <strong>Ruta:</strong> Arica → Calama → Salta → Jujuy → Arica<br>
-      👥 <strong>Delegación:</strong> ~80 personas<br>
+      🪪 <strong>Documento de viaje:</strong> Solo cédula de identidad vigente (no se requiere pasaporte)<br>
       💰 <strong>Cuenta aportes:</strong> Angélica Urbina González · BCI Cta. Cte. 01-999-124695-7<br>
       📧 <strong>Contacto:</strong> gigantesazapa.salta2026@gmail.com
     </div>
     <form id="inscripcionForm">
-      <div class="seccion">🏉 Datos del jugador</div>
+      <div class="seccion">🏉 Datos del jugador / persona que viaja</div>
       <div class="form-grid">
-        <label>Nombre completo<input name="nombre_jugador" required placeholder="Nombre y apellido del jugador"></label>
-        <label>RUT / DNI<input name="rut_jugador" required placeholder="Ej: 12.345.678-9"></label>
-        <label>Fecha de nacimiento<input type="date" name="fecha_nacimiento" required></label>
+        <label>Nombre completo<input name="nombre_jugador" required placeholder="Nombre y apellido"></label>
+        <label>RUT / Cédula de identidad<input name="rut_jugador" required placeholder="Ej: 12.345.678-9"></label>
+        <label>Fecha de nacimiento<input type="date" name="fecha_nacimiento" id="fechaNacimiento" required></label>
         <label>Categoría
           <select name="categoria" required>
             <option value="">Seleccionar...</option>
@@ -73,16 +91,33 @@
             <option>L</option><option>XL</option><option>XXL</option>
           </select>
         </label>
-        <label>Correo jugador (si tiene)<input type="email" name="correo_jugador" placeholder="opcional"></label>
+        <label>Correo (si tiene)<input type="email" name="correo_jugador" placeholder="opcional"></label>
       </div>
 
-      <div class="seccion">👨‍👩‍👦 Adulto responsable</div>
-      <div class="form-grid">
-        <label>Nombre del apoderado<input name="nombre_apoderado" required placeholder="Nombre completo"></label>
-        <label>RUT apoderado<input name="rut_apoderado" required placeholder="Ej: 12.345.678-9"></label>
-        <label>WhatsApp (principal)<input name="telefono" required placeholder="+56 9..." type="tel"></label>
-        <label>WhatsApp alternativo<input name="telefono2" placeholder="+56 9..." type="tel"></label>
-        <label class="wide">Correo electrónico<input type="email" name="correo" required placeholder="tu@correo.cl"></label>
+      <!-- CAJA QUE INDICA SI ES MAYOR O MENOR DE EDAD -->
+      <div class="edad-box" id="edadBox" style="display:none">
+        <strong id="edadTexto">—</strong>
+      </div>
+
+      <!-- SECCIÓN ADULTO RESPONSABLE - se oculta si es mayor de edad -->
+      <div id="seccionApoderado">
+        <div class="seccion">👨‍👩‍👦 Adulto responsable (obligatorio para menores de edad)</div>
+        <div class="form-grid">
+          <label>Nombre del apoderado<input name="nombre_apoderado" id="nombreApoderado" placeholder="Nombre completo"></label>
+          <label>RUT apoderado<input name="rut_apoderado" id="rutApoderado" placeholder="Ej: 12.345.678-9"></label>
+          <label>WhatsApp (principal)<input name="telefono" id="telefonoApoderado" placeholder="+56 9..." type="tel"></label>
+          <label>WhatsApp alternativo<input name="telefono2" placeholder="+56 9..." type="tel"></label>
+          <label class="wide">Correo electrónico<input type="email" name="correo" id="correoApoderado" placeholder="tu@correo.cl"></label>
+        </div>
+      </div>
+
+      <!-- SECCIÓN CONTACTO SI ES MAYOR DE EDAD (el mismo jugador) -->
+      <div id="seccionContactoMayor" style="display:none">
+        <div class="seccion">📞 Datos de contacto</div>
+        <div class="form-grid">
+          <label>WhatsApp<input name="telefono_mayor" id="telefonoMayor" placeholder="+56 9..." type="tel"></label>
+          <label>Correo electrónico<input type="email" name="correo_mayor" id="correoMayor" placeholder="tu@correo.cl"></label>
+        </div>
       </div>
 
       <div class="seccion">🏥 Salud y emergencia</div>
@@ -92,22 +127,35 @@
         <label>Previsión de salud<input name="prevision" placeholder="Ej: Fonasa A, Isapre Cruz Blanca"></label>
       </div>
 
-      <div class="seccion">📋 Información adicional</div>
+      <div class="seccion">🏉 Registro en Chile Rugby (obligatorio para viajar)</div>
+
+      <div class="toggle-box">
+        <h3>📋 ¿Está inscrito en bd.chile.rugby?</h3>
+        <div class="toggle-options">
+          <div class="toggle-opt" id="optInscritoSi" onclick="seleccionar('inscrito','si')">✅ Sí, está inscrito</div>
+          <div class="toggle-opt" id="optInscritoNo" onclick="seleccionar('inscrito','no')">❌ No está inscrito</div>
+        </div>
+        <input type="hidden" name="inscrito_chile_rugby" id="inscritoChileRugby">
+        <div class="link-inscribir" id="linkInscribir">
+          <a href="https://bd.chile.rugby/login" target="_blank">🔗 Inscribirse ahora en bd.chile.rugby</a>
+        </div>
+      </div>
+
+      <div class="toggle-box">
+        <h3>🛡️ ¿Tiene el seguro de Chile Rugby?</h3>
+        <div class="toggle-options">
+          <div class="toggle-opt" id="optSeguroSi" onclick="seleccionar('seguro','si')">✅ Sí, tiene el seguro</div>
+          <div class="toggle-opt" id="optSeguroNo" onclick="seleccionar('seguro','no')">❌ No tiene el seguro</div>
+        </div>
+        <input type="hidden" name="seguro_chile_rugby" id="seguroChileRugby">
+        <div class="link-inscribir" id="linkSeguro">
+          <a href="https://bd.chile.rugby/login" target="_blank">🔗 Tomar el seguro en bd.chile.rugby</a>
+        </div>
+      </div>
+
+      <div class="seccion">📋 Observaciones</div>
       <div class="form-grid">
-        <label>¿Tiene pasaporte vigente?
-          <select name="pasaporte">
-            <option>Sí, vigente</option>
-            <option>No, solo cédula</option>
-            <option>En trámite</option>
-          </select>
-        </label>
-        <label>¿Requiere habitación especial?
-          <select name="habitacion">
-            <option>No</option>
-            <option>Sí (indicar en observaciones)</option>
-          </select>
-        </label>
-        <label class="wide">Observaciones generales<textarea name="observaciones" placeholder="Cualquier información relevante para la organización..."></textarea></label>
+        <label class="wide">Observaciones generales (opcional)<textarea name="observaciones" placeholder="Cualquier información relevante para la organización..."></textarea></label>
       </div>
 
       <div class="actions">
@@ -119,10 +167,90 @@
   </div>
 </div>
 <script>
+// Calcular edad y mostrar/ocultar sección apoderado
+document.getElementById("fechaNacimiento").addEventListener("change", function(){
+  const fecha = new Date(this.value);
+  if(isNaN(fecha.getTime())) return;
+  const hoy = new Date();
+  let edad = hoy.getFullYear() - fecha.getFullYear();
+  const m = hoy.getMonth() - fecha.getMonth();
+  if(m < 0 || (m === 0 && hoy.getDate() < fecha.getDate())) edad--;
+
+  const edadBox = document.getElementById("edadBox");
+  const edadTexto = document.getElementById("edadTexto");
+  const seccionApoderado = document.getElementById("seccionApoderado");
+  const seccionContactoMayor = document.getElementById("seccionContactoMayor");
+  const nombreApoderado = document.getElementById("nombreApoderado");
+  const rutApoderado = document.getElementById("rutApoderado");
+  const telefonoApoderado = document.getElementById("telefonoApoderado");
+  const correoApoderado = document.getElementById("correoApoderado");
+
+  edadBox.style.display = "block";
+
+  if(edad >= 18){
+    edadTexto.textContent = "✅ " + edad + " años — Mayor de edad. No es necesario registrar adulto responsable.";
+    seccionApoderado.style.display = "none";
+    seccionContactoMayor.style.display = "block";
+    // Quitar required de campos de apoderado
+    nombreApoderado.removeAttribute("required");
+    rutApoderado.removeAttribute("required");
+    telefonoApoderado.removeAttribute("required");
+    correoApoderado.removeAttribute("required");
+  } else {
+    edadTexto.textContent = "👶 " + edad + " años — Menor de edad. Debe registrar un adulto responsable.";
+    seccionApoderado.style.display = "block";
+    seccionContactoMayor.style.display = "none";
+    nombreApoderado.setAttribute("required","required");
+    rutApoderado.setAttribute("required","required");
+    telefonoApoderado.setAttribute("required","required");
+    correoApoderado.setAttribute("required","required");
+  }
+});
+
+// Toggle Chile Rugby (inscrito / seguro)
+function seleccionar(tipo, valor){
+  if(tipo === "inscrito"){
+    document.getElementById("inscritoChileRugby").value = valor;
+    document.getElementById("optInscritoSi").classList.toggle("active-yes", valor==="si");
+    document.getElementById("optInscritoNo").classList.toggle("active-no", valor==="no");
+    if(valor==="si"){
+      document.getElementById("optInscritoSi").classList.add("active-yes");
+      document.getElementById("optInscritoNo").classList.remove("active-no");
+      document.getElementById("linkInscribir").classList.remove("show");
+    } else {
+      document.getElementById("optInscritoNo").classList.add("active-no");
+      document.getElementById("optInscritoSi").classList.remove("active-yes");
+      document.getElementById("linkInscribir").classList.add("show");
+    }
+  }
+  if(tipo === "seguro"){
+    document.getElementById("seguroChileRugby").value = valor;
+    if(valor==="si"){
+      document.getElementById("optSeguroSi").classList.add("active-yes");
+      document.getElementById("optSeguroNo").classList.remove("active-no");
+      document.getElementById("linkSeguro").classList.remove("show");
+    } else {
+      document.getElementById("optSeguroNo").classList.add("active-no");
+      document.getElementById("optSeguroSi").classList.remove("active-yes");
+      document.getElementById("linkSeguro").classList.add("show");
+    }
+  }
+}
+
 document.getElementById("inscripcionForm").addEventListener("submit", async(e)=>{
   e.preventDefault();
   const res = document.getElementById("result");
   const btn = e.currentTarget.querySelector('button[type="submit"]');
+
+  if(!document.getElementById("inscritoChileRugby").value){
+    alert("Por favor indica si está inscrito en bd.chile.rugby");
+    return;
+  }
+  if(!document.getElementById("seguroChileRugby").value){
+    alert("Por favor indica si tiene el seguro de Chile Rugby");
+    return;
+  }
+
   res.style.display = "block";
   res.textContent = "Enviando inscripción...";
   btn.disabled = true;
@@ -133,6 +261,7 @@ document.getElementById("inscripcionForm").addEventListener("submit", async(e)=>
   if(sent.ok){
     res.textContent = "✅ Inscripción registrada correctamente. La directiva revisará los datos y te contactará por WhatsApp con el código familiar y los pasos a seguir. ¡Bienvenido a la Gira Gigantes Salta 2026!";
     e.currentTarget.reset();
+    document.getElementById("edadBox").style.display = "none";
   } else {
     res.textContent = "📋 Inscripción preparada. La directiva la procesará manualmente. Envía estos datos al WhatsApp del club: gigantesazapa.salta2026@gmail.com";
   }
