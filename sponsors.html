@@ -14,6 +14,14 @@
     h1 em{color:#f36b21;font-style:normal}
     .lead{font-size:1rem;color:rgba(255,255,255,.82);margin-bottom:20px;line-height:1.5;max-width:580px}
     .main{width:min(1100px,100%);margin:0 auto;padding:32px 20px}
+
+    /* VIDEO EMOCIONAL */
+    .video-section{border-radius:16px;overflow:hidden;position:relative;margin-bottom:32px;background:#111827;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+    .video-section video{width:100%;display:block;max-height:480px;object-fit:cover}
+    .video-overlay-text{position:absolute;bottom:0;left:0;right:0;padding:24px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.85));}
+    .video-overlay-text h3{font-size:1.3rem;font-weight:900;margin:0 0 4px}
+    .video-overlay-text p{font-size:.88rem;color:rgba(255,255,255,.85);margin:0}
+
     .paquetes{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:32px}
     .paquete{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:24px;text-align:center;transition:transform .2s,box-shadow .2s}
     .paquete:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(243,107,33,.2)}
@@ -41,7 +49,7 @@
     input,select,textarea{border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:10px;font:inherit;font-size:.9rem;width:100%;box-sizing:border-box;background:rgba(255,255,255,.08);color:#fff}
     .wide{grid-column:1/-1}
     .result{margin-top:12px;border-radius:8px;padding:12px;background:#ecfdf5;color:#065f46;display:none}
-    @media(max-width:600px){.paquetes{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}}
+    @media(max-width:600px){.paquetes{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.video-section video{max-height:300px}}
     @media(max-width:400px){.paquetes{grid-template-columns:1fr}}
   </style>
 </head>
@@ -54,6 +62,17 @@
 </section>
 
 <div class="main">
+
+  <!-- VIDEO EMOCIONAL: niños bajando del bus -->
+  <div class="video-section">
+    <video autoplay muted loop playsinline>
+      <source src="niños llegando a jugar.mov" type="video/mp4">
+    </video>
+    <div class="video-overlay-text">
+      <h3>🚌 Así reciben los niños cada viaje</h3>
+      <p>Tu apoyo hace posible que sigan viviendo experiencias como esta. Más que un club, una familia.</p>
+    </div>
+  </div>
 
   <div class="beneficios">
     <h2>¿Por qué ser sponsor?</h2>
