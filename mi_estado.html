@@ -16,11 +16,12 @@
     .main{width:min(1100px,100%);margin:0 auto;padding:28px 20px}
     .panel{background:rgba(255,255,255,.97);color:#111;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 18px 46px rgba(0,0,0,.28)}
     .panel h2{margin:0 0 16px;font-size:1.3rem}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .panel p.help{color:#6b7280;font-size:.85rem;margin:0 0 16px;line-height:1.5}
+    .form-grid{display:grid;grid-template-columns:1fr;gap:12px;max-width:400px}
     label{display:grid;gap:6px;font-weight:800;font-size:.9rem}
-    input{border:1px solid #d1d5db;border-radius:8px;padding:11px;font:inherit;width:100%;box-sizing:border-box}
+    input{border:1px solid #d1d5db;border-radius:8px;padding:12px;font:inherit;font-size:1rem;width:100%;box-sizing:border-box}
     .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-    button{min-height:42px;border:0;border-radius:8px;padding:10px 18px;background:#f36b21;color:#fff;font:inherit;font-weight:900;cursor:pointer}
+    button{min-height:44px;border:0;border-radius:8px;padding:11px 22px;background:#f36b21;color:#fff;font:inherit;font-weight:900;cursor:pointer;font-size:.95rem}
     button.sec{background:#111827}
     .message{margin-top:12px;border-radius:8px;padding:12px;background:#ecfdf5;color:#065f46;font-size:.92rem}
     .message.error{background:#fef2f2;color:#991b1b}
@@ -34,30 +35,34 @@
     .sum-card{background:#fef3ec;border-left:4px solid #f36b21;border-radius:8px;padding:12px}
     .sum-card span{font-size:.75rem;font-weight:800;text-transform:uppercase;color:#6b7280}
     .sum-card strong{display:block;font-size:1.6rem;font-weight:900;color:#c2410c;line-height:1;margin-top:4px}
-    @media(max-width:640px){.form-grid,.docs-grid,.summary{grid-template-columns:1fr}}
+    .privacidad{background:#eff6ff;border:1px solid #3b82f6;border-radius:8px;padding:12px;font-size:.8rem;color:#1e3a8a;margin-top:16px;line-height:1.5}
+    @media(max-width:640px){.docs-grid,.summary{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <section class="hero">
     <div class="hero-content">
       <h1>Mi estado <em>documental</em></h1>
-      <p class="lead">Consulta qué documentos están recibidos y cuáles faltan. Solo necesitas tu RUT/DNI y código familiar.</p>
+      <p class="lead">Consulta qué documentos están recibidos y cuáles faltan, usando solo tu RUT.</p>
     </div>
   </section>
   <div class="main">
     <div class="panel">
       <h2>Consultar estado</h2>
+      <p class="help">Ingresa el RUT o DNI con el que te inscribiste y subiste tus documentos.</p>
       <form id="stateForm">
         <div class="form-grid">
-          <label>RUT / DNI jugador<input name="rut" required placeholder="Ej: 12.345.678-9"></label>
-          <label>Código familiar<input name="codigo_familiar" required placeholder="Clave privada familiar"></label>
+          <label>RUT / DNI<input name="rut" id="rutInput" required placeholder="Ej: 12.345.678-9"></label>
         </div>
         <div class="actions">
-          <button type="submit">Consultar</button>
+          <button type="submit">🔍 Consultar</button>
           <button class="sec" type="reset">Limpiar</button>
         </div>
       </form>
       <div id="message" class="message" hidden></div>
+      <div class="privacidad">
+        🔒 Por seguridad, solo se muestra si cada documento está <strong>recibido</strong> o <strong>pendiente</strong>. No se entregan enlaces ni copias de los archivos. Esos solo los puede ver la directiva en privado.
+      </div>
     </div>
     <section id="resultPanel" hidden>
       <div class="panel">
@@ -71,32 +76,69 @@
     </section>
   </div>
 <script>
-const DOCS=[["cedula_frente","Cédula frente","Imagen del frente del documento."],["cedula_reverso","Cédula reverso","Imagen del reverso del documento."],["certificado","Certificado de nacimiento","Para validar datos del menor."],["notarial","Autorización notarial","Permiso firmado para la gira."],["medica","Ficha médica","Antecedentes de salud y emergencia."],["club","Autorización del club","Respaldo interno del club."],["seguro","Seguro o cobertura","Comprobante de seguro médico."],["rsh","RSH","Cartola para postulación IND."]];
+const DOCS_API_URL = "https://script.google.com/macros/s/AKfycbxefre1Jg0JYXD3bO8c1nO0tuB1nvmVAPRjIzlfa_hVkMI1xLGGGHxcEEOEqFHfHfZASg/exec";
+
+const DOCS=[
+  ["cedula","Cédula de identidad","Frente y reverso del documento de identidad."],
+  ["notarial","Autorización notarial","Solo para menores de edad."],
+  ["medica","Autorización médica","Condiciones médicas, alergias o dietas especiales."],
+  ["seguro","Seguro médico vigente","Comprobante de seguro de Chile Rugby."],
+  ["certificado","Certificado de nacimiento","Para validar datos del jugador menor de edad."],
+  ["rsh","Registro Social de Hogares","Para postulación a fondos públicos (opcional)."]
+];
+
 const form=document.getElementById("stateForm"),msg=document.getElementById("message"),resultPanel=document.getElementById("resultPanel"),docsGrid=document.getElementById("docsGrid");
+
 function setMsg(t,err=false){msg.hidden=!t;msg.textContent=t||"";msg.classList.toggle("error",err);}
-function isReady(d){return Boolean(d&&(d.url||String(d.estado||"").toUpperCase().match(/SI|RECIBIDO/)));}
+
 function renderState(data){
   const docs=data.documentos||{};let ready=0;docsGrid.innerHTML="";
-  DOCS.forEach(([key,title,help])=>{const doc=docs[key]||{},ok=isReady(doc);if(ok)ready++;
-    const c=document.createElement("article");c.className="doc-card"+(ok?" ready":"");
-    c.innerHTML=`<h3>${title}</h3><p style="font-size:.8rem;color:#6b7280;margin:0 0 8px">${help}</p><span class="pill${ok?" ready":""}">${ok?"✅ Recibido":"⏳ Pendiente"}</span>${doc.url?`<br><a href="${doc.url}" target="_blank" style="font-size:.8rem;color:#f36b21;margin-top:6px;display:inline-block">Abrir archivo</a>`:""}${!ok?`<br><a href="documentos_carga.html" style="font-size:.8rem;color:#6b7280;margin-top:4px;display:inline-block">Subir ahora</a>`:""}`;
-    docsGrid.appendChild(c);});
+  DOCS.forEach(([key,title,help])=>{
+    const doc=docs[key]||{estado:"PENDIENTE"};
+    const ok=doc.estado==="RECIBIDO";
+    if(ok)ready++;
+    const c=document.createElement("article");
+    c.className="doc-card"+(ok?" ready":"");
+    c.innerHTML=`<h3>${title}</h3><p style="font-size:.8rem;color:#6b7280;margin:0 0 8px">${help}</p><span class="pill${ok?" ready":""}">${ok?"✅ Recibido":"⏳ Pendiente"}</span>`;
+    docsGrid.appendChild(c);
+  });
   document.getElementById("playerName").textContent=data.jugador||"Jugador";
   document.getElementById("readyCount").textContent=ready;
   document.getElementById("pendingCount").textContent=DOCS.length-ready;
-  resultPanel.hidden=false;setMsg("Estado encontrado.");
+  resultPanel.hidden=false;
+  setMsg("Estado encontrado.");
 }
+
+function queryState(rut){
+  return new Promise((resolve,reject)=>{
+    const cb="gigEst_"+Date.now(),s=document.createElement("script");
+    const url=new URL(DOCS_API_URL);
+    url.searchParams.set("action","estado");
+    url.searchParams.set("rut",rut);
+    url.searchParams.set("callback",cb);
+    window[cb]=(d)=>{delete window[cb];s.remove();resolve(d);};
+    s.onerror=()=>{delete window[cb];s.remove();reject(new Error("Error de conexión."));};
+    s.src=url.toString();document.body.appendChild(s);
+  });
+}
+
 form.addEventListener("submit",async(e)=>{
-  e.preventDefault();const d=new FormData(form);const rut=d.get("rut"),code=d.get("codigo_familiar");
-  resultPanel.hidden=true;setMsg("Consultando...");
-  if(!window.GIGANTES_APPS_SCRIPT_URL||window.GIGANTES_APPS_SCRIPT_URL.includes("PEGAR")){setMsg("Falta configurar la URL.",true);return;}
-  const cb="gigEst_"+Date.now(),s=document.createElement("script");
-  const url=new URL(window.GIGANTES_APPS_SCRIPT_URL);
-  url.searchParams.set("action","estado");url.searchParams.set("rut",rut);url.searchParams.set("codigo_familiar",code);url.searchParams.set("callback",cb);
-  window[cb]=(data)=>{delete window[cb];s.remove();if(!data||!data.ok){setMsg((data&&data.message)||"No se encontró estado.",true);return;}renderState(data);};
-  s.onerror=()=>{delete window[cb];s.remove();setMsg("Error de conexión.",true);};
-  s.src=url.toString();document.body.appendChild(s);
+  e.preventDefault();
+  const rut=document.getElementById("rutInput").value.trim();
+  resultPanel.hidden=true;
+  setMsg("Consultando estado documental...");
+  try{
+    const state=await queryState(rut);
+    if(!state||!state.ok){
+      setMsg((state&&state.message)||"No se encontró estado para ese RUT.",true);
+      return;
+    }
+    renderState(state);
+  }catch(err){
+    setMsg("No se pudo consultar. Verifica tu conexión e intenta de nuevo.",true);
+  }
 });
+
 form.addEventListener("reset",()=>{setMsg("");resultPanel.hidden=true;docsGrid.innerHTML="";});
 </script>
 </body>
