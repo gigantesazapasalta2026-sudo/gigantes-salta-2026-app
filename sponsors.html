@@ -7,14 +7,13 @@
   <script src="config.js"></script>
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#0b0f14;color:#fff;min-height:100vh}
-    .hero{min-height:30vh;display:flex;align-items:flex-end;padding:80px 20px 28px;background:#111827}
-    .hero-content{width:min(1100px,100%);margin:0 auto}
+    .topbanner{min-height:26vh;display:flex;align-items:flex-end;padding:80px 20px 28px;background:#111827}
+    .topbanner-content{width:min(1100px,100%);margin:0 auto}
     h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:900;margin:0 0 12px;line-height:.95}
     h1 em{color:#f36b21;font-style:normal}
     .lead{font-size:1rem;color:rgba(255,255,255,.82);margin-bottom:0;line-height:1.5;max-width:580px}
     .main{width:min(1100px,100%);margin:0 auto;padding:32px 20px}
 
-    /* VIDEO EMOCIONAL — protagonista, sin overlays */
     .video-section{border-radius:16px;overflow:hidden;margin-bottom:14px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.4)}
     .video-section video{width:100%;display:block;max-height:520px;object-fit:contain;background:#000}
     .video-caption{text-align:center;margin-bottom:32px}
@@ -53,8 +52,8 @@
   </style>
 </head>
 <body>
-<section class="hero">
-  <div class="hero-content">
+<section class="topbanner">
+  <div class="topbanner-content">
     <h1>Sé parte de la <em>gira</em></h1>
     <p class="lead">Tu empresa viaja con nosotros a Salta 2026. Más de 80 personas, 5 días, partidos internacionales y Los Pumas vs Australia.</p>
   </div>
@@ -62,7 +61,6 @@
 
 <div class="main">
 
-  <!-- VIDEO EMOCIONAL: niños bajando del bus — protagonista, sin overlays -->
   <div class="video-section">
     <video autoplay muted loop playsinline controls>
       <source src="niños llegando a jugar.mov" type="video/mp4">
