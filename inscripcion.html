@@ -32,12 +32,8 @@
     button:hover{background:#c2410c}
     button.sec{background:#111827}
     .result{margin-top:16px;border-radius:10px;padding:16px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;display:none;line-height:1.6}
-
-    /* CAJA EDAD - toggle adulto responsable */
     .edad-box{background:#eff6ff;border:2px solid #3b82f6;border-radius:10px;padding:16px;margin-bottom:16px}
     .edad-box label{color:#1e3a8a}
-
-    /* TOGGLE CHILE RUGBY */
     .toggle-box{background:#fef3ec;border:2px solid #f36b21;border-radius:10px;padding:18px;margin-bottom:14px}
     .toggle-box h3{margin:0 0 10px;font-size:.95rem;color:#c2410c;display:flex;align-items:center;gap:8px}
     .toggle-options{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
@@ -48,8 +44,6 @@
     .link-inscribir{display:none;text-align:center;margin-top:8px}
     .link-inscribir.show{display:block}
     .link-inscribir a{display:inline-flex;align-items:center;gap:6px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:8px;padding:9px 18px;font-weight:900;font-size:.85rem}
-    .oculto{display:none!important}
-
     @media(max-width:640px){.form-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -94,12 +88,10 @@
         <label>Correo (si tiene)<input type="email" name="correo_jugador" placeholder="opcional"></label>
       </div>
 
-      <!-- CAJA QUE INDICA SI ES MAYOR O MENOR DE EDAD -->
       <div class="edad-box" id="edadBox" style="display:none">
         <strong id="edadTexto">—</strong>
       </div>
 
-      <!-- SECCIÓN ADULTO RESPONSABLE - se oculta si es mayor de edad -->
       <div id="seccionApoderado">
         <div class="seccion">👨‍👩‍👦 Adulto responsable (obligatorio para menores de edad)</div>
         <div class="form-grid">
@@ -111,7 +103,6 @@
         </div>
       </div>
 
-      <!-- SECCIÓN CONTACTO SI ES MAYOR DE EDAD (el mismo jugador) -->
       <div id="seccionContactoMayor" style="display:none">
         <div class="seccion">📞 Datos de contacto</div>
         <div class="form-grid">
@@ -123,7 +114,8 @@
       <div class="seccion">🏥 Salud y emergencia</div>
       <div class="form-grid">
         <label class="wide">Alergias o condiciones médicas<textarea name="alergias" placeholder="Ej: alergia a penicilina, asma leve... Si no tiene, escribe 'Sin antecedentes'"></textarea></label>
-        <label>Contacto de emergencia<input name="contacto_emergencia" required placeholder="Nombre y teléfono"></label>
+        <label>Nombre contacto de emergencia<input name="contacto_emergencia_nombre" required placeholder="Ej: María González (mamá)"></label>
+        <label>Teléfono contacto de emergencia<input name="contacto_emergencia_telefono" required placeholder="+56 9..." type="tel"></label>
         <label>Previsión de salud<input name="prevision" placeholder="Ej: Fonasa A, Isapre Cruz Blanca"></label>
       </div>
 
@@ -167,7 +159,6 @@
   </div>
 </div>
 <script>
-// Calcular edad y mostrar/ocultar sección apoderado
 document.getElementById("fechaNacimiento").addEventListener("change", function(){
   const fecha = new Date(this.value);
   if(isNaN(fecha.getTime())) return;
@@ -191,7 +182,6 @@ document.getElementById("fechaNacimiento").addEventListener("change", function()
     edadTexto.textContent = "✅ " + edad + " años — Mayor de edad. No es necesario registrar adulto responsable.";
     seccionApoderado.style.display = "none";
     seccionContactoMayor.style.display = "block";
-    // Quitar required de campos de apoderado
     nombreApoderado.removeAttribute("required");
     rutApoderado.removeAttribute("required");
     telefonoApoderado.removeAttribute("required");
@@ -207,12 +197,9 @@ document.getElementById("fechaNacimiento").addEventListener("change", function()
   }
 });
 
-// Toggle Chile Rugby (inscrito / seguro)
 function seleccionar(tipo, valor){
   if(tipo === "inscrito"){
     document.getElementById("inscritoChileRugby").value = valor;
-    document.getElementById("optInscritoSi").classList.toggle("active-yes", valor==="si");
-    document.getElementById("optInscritoNo").classList.toggle("active-no", valor==="no");
     if(valor==="si"){
       document.getElementById("optInscritoSi").classList.add("active-yes");
       document.getElementById("optInscritoNo").classList.remove("active-no");
