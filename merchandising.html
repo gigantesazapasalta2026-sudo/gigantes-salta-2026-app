@@ -10,7 +10,7 @@
     :root{--naranja:#f36b21;--naranja-oscuro:#c2410c;--negro:#0b0f14;--negro2:#171717;--blanco:#fff}
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:Arial,sans-serif;background:var(--negro);color:#fff;min-height:100vh}
-    .hero{min-height:52vh;display:flex;align-items:flex-end;position:relative;overflow:hidden;padding:80px 20px 32px}
+    .hero{min-height:46vh;display:flex;align-items:flex-end;position:relative;overflow:hidden;padding:80px 20px 32px}
     .hero-inner{position:relative;z-index:1;width:min(1180px,100%);margin:0 auto}
     .hero-tag{display:inline-block;background:var(--naranja);border-radius:99px;padding:6px 16px;font-size:.8rem;font-weight:900;margin-bottom:12px}
     h1{font-size:clamp(2.2rem,6vw,5rem);line-height:.95;font-weight:900;margin-bottom:10px}
@@ -25,6 +25,19 @@
     .section-inner{width:min(1180px,100%);margin:0 auto}
     .section-title{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;margin-bottom:6px}
     .section-sub{color:rgba(255,255,255,.55);font-size:.88rem;margin-bottom:24px}
+
+    /* SECCION MODELO SPONSOR */
+    .modelo-sponsor{background:linear-gradient(135deg,#1a0a00,#111827);border:2px solid var(--naranja);border-radius:16px;padding:28px;margin-bottom:8px}
+    .modelo-sponsor h2{font-size:1.4rem;font-weight:900;color:var(--naranja);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+    .modelo-sponsor p{font-size:.92rem;color:rgba(255,255,255,.82);line-height:1.7;margin-bottom:16px}
+    .modelo-pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:16px}
+    .modelo-paso{background:rgba(255,255,255,.06);border-radius:10px;padding:16px;text-align:center}
+    .modelo-paso .num{background:var(--naranja);color:#fff;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;margin:0 auto 10px}
+    .modelo-paso h3{font-size:.88rem;font-weight:900;margin-bottom:4px}
+    .modelo-paso p{font-size:.78rem;color:rgba(255,255,255,.6);margin:0;line-height:1.4}
+    .modelo-ejemplo{background:rgba(243,107,33,.12);border-left:4px solid var(--naranja);border-radius:0 8px 8px 0;padding:14px 18px;font-size:.85rem;color:rgba(255,255,255,.85);line-height:1.6}
+    .modelo-ejemplo strong{color:var(--naranja)}
+
     .productos{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
     .producto{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;transition:transform .2s,box-shadow .2s}
     .producto:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(243,107,33,.2)}
@@ -79,22 +92,35 @@
   </div>
 </section>
 
+<section class="section">
+  <div class="section-inner">
+    <div class="modelo-sponsor">
+      <h2>🤝 ¿Cómo funciona el merchandising con sponsors?</h2>
+      <p>Buscamos empresas que financien la producción de cada producto. A cambio, su logo queda impreso junto al del club, y todo lo recaudado con la venta va directo a financiar la Gira Salta 2026.</p>
+      <div class="modelo-pasos">
+        <div class="modelo-paso"><div class="num">1</div><h3>Empresa financia</h3><p>Una empresa paga la producción de un producto (ej. poleras, gorros).</p></div>
+        <div class="modelo-paso"><div class="num">2</div><h3>Doble logo</h3><p>El producto lleva el logo de Gigantes de Azapa y el de la empresa auspiciadora.</p></div>
+        <div class="modelo-paso"><div class="num">3</div><h3>Se vende</h3><p>El club vende el producto a familias, hinchas y comunidad.</p></div>
+        <div class="modelo-paso"><div class="num">4</div><h3>Se recauda</h3><p>100% de la venta se destina a financiar la gira a Salta y Jujuy.</p></div>
+      </div>
+      <div class="modelo-ejemplo">
+        <strong>Ejemplo:</strong> la empresa "TPA" financia la producción de 50 jockeys oficiales. Cada jockey lleva el logo de Gigantes de Azapa y el logo de TPA. El club vende los 50 jockeys a $15.000 cada uno, recaudando $750.000 para el viaje, mientras TPA gana visibilidad en toda la comunidad del club.
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="section" id="catalogo">
   <div class="section-inner">
     <h2 class="section-title">Catálogo oficial</h2>
-    <p class="section-sub">Todos los productos con diseño exclusivo "Ruta a Jujuy 2026" · Colores negro y naranja</p>
+    <p class="section-sub">Todos los productos con diseño exclusivo "Ruta a Jujuy 2026" · Colores negro y naranja. ¿Tu empresa quiere financiar uno de estos productos? <a href="sponsors.html" style="color:var(--naranja);font-weight:700">Sé sponsor aquí →</a></p>
     <div class="productos">
-      <div class="producto"><div class="producto-img"><img src="Polera_de_Juego.png" alt="Camiseta de juego"></div><div class="producto-body"><div class="producto-nombre">Camiseta de Juego</div><div class="producto-desc">Camiseta oficial de rugby. Sublimación total. Bandera chilena en manga.</div><div class="producto-precio">$25.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q1"><button class="btn-agregar" onclick="agregar('Camiseta de Juego','Polera_de_Juego.png',25000,'q1')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Polera_de_salida.png" alt="Camiseta de salida"></div><div class="producto-body"><div class="producto-nombre">Camiseta de Salida</div><div class="producto-desc">Polerón oficial de salida con logos de sponsors.</div><div class="producto-precio">$28.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q2"><button class="btn-agregar" onclick="agregar('Camiseta de Salida','Polera_de_salida.png',28000,'q2')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Jockey_oficial.png" alt="Jockey oficial"></div><div class="producto-body"><div class="producto-nombre">Jockey Oficial</div><div class="producto-desc">Cap estilo New Era. Negro con detalles naranjo. Logo bordado.</div><div class="producto-precio">$15.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q3"><button class="btn-agregar" onclick="agregar('Jockey Oficial','Jockey_oficial.png',15000,'q3')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Gorro_invierno.png" alt="Gorro invierno"></div><div class="producto-body"><div class="producto-nombre">Gorro Invierno</div><div class="producto-desc">Gorro pompón negro y naranja. Perfecto para el frío de Salta.</div><div class="producto-precio">$12.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q4"><button class="btn-agregar" onclick="agregar('Gorro Invierno','Gorro_invierno.png',12000,'q4')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Vaso_Termico.png" alt="Vaso térmico"></div><div class="producto-body"><div class="producto-nombre">Vaso Térmico</div><div class="producto-desc">Vaso térmico negro con logo y ruta Arica-Jujuy-Salta. 400ml.</div><div class="producto-precio">$18.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q5"><button class="btn-agregar" onclick="agregar('Vaso Térmico','Vaso_Termico.png',18000,'q5')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Tazon.png" alt="Tazón"></div><div class="producto-body"><div class="producto-nombre">Tazón</div><div class="producto-desc">Tazón negro con interior naranja. Logo Gigantes al frente.</div><div class="producto-precio">$10.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q6"><button class="btn-agregar" onclick="agregar('Tazón','Tazon.png',10000,'q6')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Botella_Aluminio.png" alt="Garrafa aluminio"></div><div class="producto-body"><div class="producto-nombre">Garrafa Aluminio</div><div class="producto-desc">Botella aluminio negra con ruta Arica-Jujuy-Salta grabada.</div><div class="producto-precio">$16.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q7"><button class="btn-agregar" onclick="agregar('Garrafa Aluminio','Botella_Aluminio.png',16000,'q7')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Mochila.png" alt="Mochila"></div><div class="producto-body"><div class="producto-nombre">Mochila</div><div class="producto-desc">Mochila negra con logo bordado. Ideal para el viaje.</div><div class="producto-precio">$35.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q8"><button class="btn-agregar" onclick="agregar('Mochila','Mochila.png',35000,'q8')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Banderin.png" alt="Banderín"></div><div class="producto-body"><div class="producto-nombre">Banderín</div><div class="producto-desc">Banderín oficial negro y naranja. "Ruta a Jujuy 2026".</div><div class="producto-precio">$8.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q9"><button class="btn-agregar" onclick="agregar('Banderín','Banderin.png',8000,'q9')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Llavero.png" alt="Llavero"></div><div class="producto-body"><div class="producto-nombre">Llavero Camiseta</div><div class="producto-desc">Llavero en forma de camiseta. Diseño exclusivo de la gira.</div><div class="producto-precio">$4.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q10"><button class="btn-agregar" onclick="agregar('Llavero Camiseta','Llavero.png',4000,'q10')">+ Agregar</button></div></div></div>
-      <div class="producto"><div class="producto-img"><img src="Pulsera.png" alt="Pulsera"></div><div class="producto-body"><div class="producto-nombre">Pulsera</div><div class="producto-desc">Silicona negra y naranja. "Ruta a Jujuy 2026".</div><div class="producto-precio">$2.500 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q11"><button class="btn-agregar" onclick="agregar('Pulsera','Pulsera.png',2500,'q11')">+ Agregar</button></div></div></div>
+      <div class="producto"><div class="producto-img"><img src="Polera de Juego.png" alt="Camiseta de juego"></div><div class="producto-body"><div class="producto-nombre">Camiseta de Juego</div><div class="producto-desc">Camiseta oficial de rugby. Sublimación total. Bandera chilena en manga. Espacio disponible para logo de sponsor.</div><div class="producto-precio">$25.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q1"><button class="btn-agregar" onclick="agregar('Camiseta de Juego','Polera de Juego.png',25000,'q1')">+ Agregar</button></div></div></div>
+      <div class="producto"><div class="producto-img"><img src="Polera de salida.png" alt="Camiseta de salida"></div><div class="producto-body"><div class="producto-nombre">Camiseta de Salida</div><div class="producto-desc">Polerón oficial de salida con logos de sponsors. Espacio disponible para logo de sponsor.</div><div class="producto-precio">$28.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q2"><button class="btn-agregar" onclick="agregar('Camiseta de Salida','Polera de salida.png',28000,'q2')">+ Agregar</button></div></div></div>
+      <div class="producto"><div class="producto-img"><img src="Jockey oficial.png" alt="Jockey oficial"></div><div class="producto-body"><div class="producto-nombre">Jockey Oficial</div><div class="producto-desc">Cap estilo New Era. Negro con detalles naranjo. Logo bordado. Espacio disponible para logo de sponsor.</div><div class="producto-precio">$15.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q3"><button class="btn-agregar" onclick="agregar('Jockey Oficial','Jockey oficial.png',15000,'q3')">+ Agregar</button></div></div></div>
+      <div class="producto"><div class="producto-img"><img src="Gorro invierno.png" alt="Gorro invierno"></div><div class="producto-body"><div class="producto-nombre">Gorro Invierno</div><div class="producto-desc">Gorro pompón negro y naranja. Perfecto para el frío de Salta. Espacio disponible para logo de sponsor.</div><div class="producto-precio">$12.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q4"><button class="btn-agregar" onclick="agregar('Gorro Invierno','Gorro invierno.png',12000,'q4')">+ Agregar</button></div></div></div>
+      <div class="producto"><div class="producto-img"><img src="Vaso Termico.png" alt="Vaso térmico"></div><div class="producto-body"><div class="producto-nombre">Vaso Térmico</div><div class="producto-desc">Vaso térmico negro con logo y ruta Arica-Jujuy-Salta. 400ml. Espacio disponible para logo de sponsor.</div><div class="producto-precio">$18.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q5"><button class="btn-agregar" onclick="agregar('Vaso Térmico','Vaso Termico.png',18000,'q5')">+ Agregar</button></div></div></div>
+      <div class="producto"><div class="producto-img"><img src="Botella Aluminio.png" alt="Garrafa aluminio"></div><div class="producto-body"><div class="producto-nombre">Garrafa Aluminio</div><div class="producto-desc">Botella aluminio negra con ruta Arica-Jujuy-Salta grabada. Espacio disponible para logo de sponsor.</div><div class="producto-precio">$16.000 <span>CLP</span></div><div class="producto-footer"><input class="qty" type="number" min="1" max="20" value="1" id="q6"><button class="btn-agregar" onclick="agregar('Garrafa Aluminio','Botella Aluminio.png',16000,'q6')">+ Agregar</button></div></div></div>
     </div>
   </div>
 </section>
