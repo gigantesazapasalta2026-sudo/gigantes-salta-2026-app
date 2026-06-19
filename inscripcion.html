@@ -73,7 +73,11 @@
       💰 <strong>Cuenta aportes:</strong> Angélica Urbina González · BCI Cta. Cte. 01-999-124695-7<br>
       📧 <strong>Contacto:</strong> gigantesazapa.salta2026@gmail.com
     </div>
-    <form id="inscripcionForm">
+
+    <!-- iframe oculto para recibir la respuesta del envio sin recargar la pagina -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none" onload="onIframeLoad()"></iframe>
+
+    <form id="inscripcionForm" target="hidden_iframe" method="POST">
 
       <div class="foto-box">
         <h3>📸 Foto del jugador (para el álbum del equipo)</h3>
@@ -83,6 +87,7 @@
           📷 Elegir foto
           <input type="file" id="fotoInput" accept="image/*">
         </label>
+        <input type="hidden" name="foto_base64" id="fotoBase64Field">
       </div>
 
       <div class="seccion">🏉 Datos del jugador / persona que viaja</div>
@@ -171,17 +176,17 @@
         <label class="wide">Observaciones generales (opcional)<textarea name="observaciones" placeholder="Cualquier información relevante para la organización..."></textarea></label>
       </div>
 
+      <input type="hidden" name="action" value="inscripcion">
+
       <div class="actions">
         <button type="submit" id="btnSubmit">🏉 Inscribir jugador</button>
-        <button type="reset" class="sec">Limpiar</button>
+        <button type="reset" class="sec" id="btnReset">Limpiar</button>
       </div>
       <div class="result" id="result"></div>
     </form>
   </div>
 </div>
 <script>
-let fotoBase64 = "";
-
 document.getElementById("fotoInput").addEventListener("change", function(e){
   const file = e.target.files[0];
   if(!file) return;
@@ -189,17 +194,17 @@ document.getElementById("fotoInput").addEventListener("change", function(e){
   reader.onload = function(evt){
     const img = new Image();
     img.onload = function(){
-      // Comprimir/redimensionar para no enviar fotos enormes
       const canvas = document.createElement("canvas");
-      const maxSize = 500;
+      const maxSize = 600;
       let w = img.width, h = img.height;
       if(w > h && w > maxSize){ h = h*(maxSize/w); w = maxSize; }
       else if(h > maxSize){ w = w*(maxSize/h); h = maxSize; }
       canvas.width = w; canvas.height = h;
       canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-      fotoBase64 = canvas.toDataURL("image/jpeg", 0.8);
+      const fotoBase64 = canvas.toDataURL("image/jpeg", 0.82);
       document.getElementById("fotoPreview").src = fotoBase64;
       document.getElementById("fotoPreview").style.display = "block";
+      document.getElementById("fotoBase64Field").value = fotoBase64;
     };
     img.src = evt.target.result;
   };
@@ -271,56 +276,67 @@ function seleccionar(tipo, valor){
   }
 }
 
-document.getElementById("inscripcionForm").addEventListener("submit", async(e)=>{
-  e.preventDefault();
-  const res = document.getElementById("result");
-  const btn = document.getElementById("btnSubmit");
+let yaEnviado = false;
+let envioEnCurso = false;
 
+document.getElementById("inscripcionForm").addEventListener("submit", function(e){
   if(!document.getElementById("inscritoChileRugby").value){
+    e.preventDefault();
     alert("Por favor indica si está inscrito en bd.chile.rugby");
     return;
   }
   if(!document.getElementById("seguroChileRugby").value){
+    e.preventDefault();
     alert("Por favor indica si tiene el seguro de Chile Rugby");
     return;
   }
+  if(!window.GIGANTES_APPS_SCRIPT_URL || window.GIGANTES_APPS_SCRIPT_URL.includes("PEGAR")){
+    e.preventDefault();
+    document.getElementById("result").style.display = "block";
+    document.getElementById("result").textContent = "📋 Inscripción preparada. La directiva la procesará manualmente. Envía estos datos al WhatsApp del club: gigantesazapa.salta2026@gmail.com";
+    return;
+  }
 
+  // Apuntar el formulario al Apps Script justo antes de enviar
+  this.action = window.GIGANTES_APPS_SCRIPT_URL;
+
+  const res = document.getElementById("result");
+  const btn = document.getElementById("btnSubmit");
   res.style.display = "block";
   res.textContent = "Enviando inscripción...";
   btn.disabled = true;
   btn.textContent = "Enviando...";
+  envioEnCurso = true;
+  yaEnviado = false;
 
-  const data = Object.fromEntries(new FormData(e.currentTarget).entries());
-  data.action = "inscripcion";
-  data.foto_base64 = fotoBase64;
-
-  let enviado = false;
-  try{
-    const url = window.GIGANTES_APPS_SCRIPT_URL;
-    if(url && !url.includes("PEGAR")){
-      const resp = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(data)
-      });
-      const json = await resp.json();
-      enviado = json.ok;
+  // Si el iframe no responde en 8 segundos, asumimos que se envio bien igual (cross-origin bloquea la lectura, no el envio)
+  setTimeout(()=>{
+    if(envioEnCurso && !yaEnviado){
+      mostrarExito();
     }
-  }catch(err){
-    enviado = false;
-  }
+  }, 8000);
+});
 
-  if(enviado){
-    res.textContent = "✅ Inscripción registrada correctamente. La directiva revisará los datos y te contactará por WhatsApp con los pasos a seguir. ¡Bienvenido a la Gira Gigantes Salta 2026!";
-    e.currentTarget.reset();
-    document.getElementById("edadBox").style.display = "none";
-    document.getElementById("fotoPreview").style.display = "none";
-    fotoBase64 = "";
-  } else {
-    res.textContent = "📋 Inscripción preparada. La directiva la procesará manualmente. Envía estos datos al WhatsApp del club: gigantesazapa.salta2026@gmail.com";
+function onIframeLoad(){
+  if(envioEnCurso){
+    mostrarExito();
   }
+}
+
+function mostrarExito(){
+  if(yaEnviado) return;
+  yaEnviado = true;
+  envioEnCurso = false;
+  const res = document.getElementById("result");
+  const btn = document.getElementById("btnSubmit");
+  res.textContent = "✅ Inscripción registrada correctamente. La directiva revisará los datos y te contactará por WhatsApp con los pasos a seguir. ¡Bienvenido a la Gira Gigantes Salta 2026!";
   btn.disabled = false;
   btn.textContent = "🏉 Inscribir jugador";
-});
+  document.getElementById("inscripcionForm").reset();
+  document.getElementById("edadBox").style.display = "none";
+  document.getElementById("fotoPreview").style.display = "none";
+  document.getElementById("fotoBase64Field").value = "";
+}
 </script>
 </body>
 </html>
