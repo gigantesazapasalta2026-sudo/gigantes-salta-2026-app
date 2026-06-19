@@ -53,6 +53,7 @@
     .foto-input-label{display:inline-flex;align-items:center;gap:8px;background:#f36b21;color:#fff;border-radius:8px;padding:10px 20px;font-weight:900;font-size:.85rem;cursor:pointer}
     .foto-input-label:hover{background:#c2410c}
     input[type=file]{display:none}
+    .foto-status{font-size:.78rem;color:#10b981;font-weight:800;margin-top:8px;display:none}
 
     @media(max-width:640px){.form-grid{grid-template-columns:1fr}}
   </style>
@@ -74,10 +75,9 @@
       📧 <strong>Contacto:</strong> gigantesazapa.salta2026@gmail.com
     </div>
 
-    <!-- iframe oculto para recibir la respuesta del envio sin recargar la pagina -->
     <iframe name="hidden_iframe" id="hidden_iframe" style="display:none" onload="onIframeLoad()"></iframe>
 
-    <form id="inscripcionForm" target="hidden_iframe" method="POST">
+    <form id="inscripcionForm" target="hidden_iframe" method="POST" enctype="multipart/form-data">
 
       <div class="foto-box">
         <h3>📸 Foto del jugador (para el álbum del equipo)</h3>
@@ -87,7 +87,8 @@
           📷 Elegir foto
           <input type="file" id="fotoInput" accept="image/*">
         </label>
-        <input type="hidden" name="foto_base64" id="fotoBase64Field">
+        <div class="foto-status" id="fotoStatus">✅ Foto lista para enviar</div>
+        <textarea name="foto_base64" id="fotoBase64Field" style="display:none"></textarea>
       </div>
 
       <div class="seccion">🏉 Datos del jugador / persona que viaja</div>
@@ -195,16 +196,18 @@ document.getElementById("fotoInput").addEventListener("change", function(e){
     const img = new Image();
     img.onload = function(){
       const canvas = document.createElement("canvas");
-      const maxSize = 600;
+      const maxSize = 500;
       let w = img.width, h = img.height;
       if(w > h && w > maxSize){ h = h*(maxSize/w); w = maxSize; }
       else if(h > maxSize){ w = w*(maxSize/h); h = maxSize; }
       canvas.width = w; canvas.height = h;
       canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-      const fotoBase64 = canvas.toDataURL("image/jpeg", 0.82);
+      const fotoBase64 = canvas.toDataURL("image/jpeg", 0.75);
       document.getElementById("fotoPreview").src = fotoBase64;
       document.getElementById("fotoPreview").style.display = "block";
       document.getElementById("fotoBase64Field").value = fotoBase64;
+      document.getElementById("fotoStatus").style.display = "block";
+      document.getElementById("fotoStatus").textContent = "✅ Foto lista para enviar (" + Math.round(fotoBase64.length/1024) + " KB)";
     };
     img.src = evt.target.result;
   };
@@ -297,7 +300,6 @@ document.getElementById("inscripcionForm").addEventListener("submit", function(e
     return;
   }
 
-  // Apuntar el formulario al Apps Script justo antes de enviar
   this.action = window.GIGANTES_APPS_SCRIPT_URL;
 
   const res = document.getElementById("result");
@@ -309,12 +311,11 @@ document.getElementById("inscripcionForm").addEventListener("submit", function(e
   envioEnCurso = true;
   yaEnviado = false;
 
-  // Si el iframe no responde en 8 segundos, asumimos que se envio bien igual (cross-origin bloquea la lectura, no el envio)
   setTimeout(()=>{
     if(envioEnCurso && !yaEnviado){
       mostrarExito();
     }
-  }, 8000);
+  }, 10000);
 });
 
 function onIframeLoad(){
@@ -335,6 +336,7 @@ function mostrarExito(){
   document.getElementById("inscripcionForm").reset();
   document.getElementById("edadBox").style.display = "none";
   document.getElementById("fotoPreview").style.display = "none";
+  document.getElementById("fotoStatus").style.display = "none";
   document.getElementById("fotoBase64Field").value = "";
 }
 </script>
