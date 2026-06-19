@@ -31,6 +31,7 @@
     button{min-height:44px;border:0;border-radius:10px;padding:12px 24px;background:#f36b21;color:#fff;font:inherit;font-size:.95rem;font-weight:900;cursor:pointer}
     button:hover{background:#c2410c}
     button.sec{background:#111827}
+    button:disabled{opacity:.6;cursor:not-allowed}
     .result{margin-top:16px;border-radius:10px;padding:16px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;display:none;line-height:1.6}
     .edad-box{background:#eff6ff;border:2px solid #3b82f6;border-radius:10px;padding:16px;margin-bottom:16px}
     .edad-box label{color:#1e3a8a}
@@ -44,6 +45,15 @@
     .link-inscribir{display:none;text-align:center;margin-top:8px}
     .link-inscribir.show{display:block}
     .link-inscribir a{display:inline-flex;align-items:center;gap:6px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:8px;padding:9px 18px;font-weight:900;font-size:.85rem}
+
+    .foto-box{background:#fef3ec;border:2px dashed #f36b21;border-radius:12px;padding:20px;text-align:center;margin-bottom:16px}
+    .foto-box h3{margin:0 0 6px;font-size:.95rem;color:#c2410c}
+    .foto-box p{font-size:.8rem;color:#6b7280;margin:0 0 14px}
+    .foto-preview{width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:none;border:3px solid #f36b21}
+    .foto-input-label{display:inline-flex;align-items:center;gap:8px;background:#f36b21;color:#fff;border-radius:8px;padding:10px 20px;font-weight:900;font-size:.85rem;cursor:pointer}
+    .foto-input-label:hover{background:#c2410c}
+    input[type=file]{display:none}
+
     @media(max-width:640px){.form-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -57,13 +67,24 @@
 <div class="main">
   <div class="panel">
     <div class="info-box">
-      📅 <strong>Gira:</strong> 26 al 30 de agosto 2026<br>
+      📅 <strong>Gira:</strong> 25 al 30 de agosto 2026<br>
       🚌 <strong>Ruta:</strong> Arica → Calama → Salta → Jujuy → Arica<br>
       🪪 <strong>Documento de viaje:</strong> Solo cédula de identidad vigente (no se requiere pasaporte)<br>
       💰 <strong>Cuenta aportes:</strong> Angélica Urbina González · BCI Cta. Cte. 01-999-124695-7<br>
       📧 <strong>Contacto:</strong> gigantesazapa.salta2026@gmail.com
     </div>
     <form id="inscripcionForm">
+
+      <div class="foto-box">
+        <h3>📸 Foto del jugador (para el álbum del equipo)</h3>
+        <p>Sube una foto para aparecer en el álbum oficial del equipo. Es opcional, pero recomendado.</p>
+        <img id="fotoPreview" class="foto-preview" alt="Vista previa">
+        <label class="foto-input-label">
+          📷 Elegir foto
+          <input type="file" id="fotoInput" accept="image/*">
+        </label>
+      </div>
+
       <div class="seccion">🏉 Datos del jugador / persona que viaja</div>
       <div class="form-grid">
         <label>Nombre completo<input name="nombre_jugador" required placeholder="Nombre y apellido"></label>
@@ -151,7 +172,7 @@
       </div>
 
       <div class="actions">
-        <button type="submit">🏉 Inscribir jugador</button>
+        <button type="submit" id="btnSubmit">🏉 Inscribir jugador</button>
         <button type="reset" class="sec">Limpiar</button>
       </div>
       <div class="result" id="result"></div>
@@ -159,6 +180,32 @@
   </div>
 </div>
 <script>
+let fotoBase64 = "";
+
+document.getElementById("fotoInput").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt){
+    const img = new Image();
+    img.onload = function(){
+      // Comprimir/redimensionar para no enviar fotos enormes
+      const canvas = document.createElement("canvas");
+      const maxSize = 500;
+      let w = img.width, h = img.height;
+      if(w > h && w > maxSize){ h = h*(maxSize/w); w = maxSize; }
+      else if(h > maxSize){ w = w*(maxSize/h); h = maxSize; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      fotoBase64 = canvas.toDataURL("image/jpeg", 0.8);
+      document.getElementById("fotoPreview").src = fotoBase64;
+      document.getElementById("fotoPreview").style.display = "block";
+    };
+    img.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
 document.getElementById("fechaNacimiento").addEventListener("change", function(){
   const fecha = new Date(this.value);
   if(isNaN(fecha.getTime())) return;
@@ -227,7 +274,7 @@ function seleccionar(tipo, valor){
 document.getElementById("inscripcionForm").addEventListener("submit", async(e)=>{
   e.preventDefault();
   const res = document.getElementById("result");
-  const btn = e.currentTarget.querySelector('button[type="submit"]');
+  const btn = document.getElementById("btnSubmit");
 
   if(!document.getElementById("inscritoChileRugby").value){
     alert("Por favor indica si está inscrito en bd.chile.rugby");
@@ -242,13 +289,32 @@ document.getElementById("inscripcionForm").addEventListener("submit", async(e)=>
   res.textContent = "Enviando inscripción...";
   btn.disabled = true;
   btn.textContent = "Enviando...";
+
   const data = Object.fromEntries(new FormData(e.currentTarget).entries());
   data.action = "inscripcion";
-  const sent = await sendToGigantes(data);
-  if(sent.ok){
-    res.textContent = "✅ Inscripción registrada correctamente. La directiva revisará los datos y te contactará por WhatsApp con el código familiar y los pasos a seguir. ¡Bienvenido a la Gira Gigantes Salta 2026!";
+  data.foto_base64 = fotoBase64;
+
+  let enviado = false;
+  try{
+    const url = window.GIGANTES_APPS_SCRIPT_URL;
+    if(url && !url.includes("PEGAR")){
+      const resp = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
+      const json = await resp.json();
+      enviado = json.ok;
+    }
+  }catch(err){
+    enviado = false;
+  }
+
+  if(enviado){
+    res.textContent = "✅ Inscripción registrada correctamente. La directiva revisará los datos y te contactará por WhatsApp con los pasos a seguir. ¡Bienvenido a la Gira Gigantes Salta 2026!";
     e.currentTarget.reset();
     document.getElementById("edadBox").style.display = "none";
+    document.getElementById("fotoPreview").style.display = "none";
+    fotoBase64 = "";
   } else {
     res.textContent = "📋 Inscripción preparada. La directiva la procesará manualmente. Envía estos datos al WhatsApp del club: gigantesazapa.salta2026@gmail.com";
   }
