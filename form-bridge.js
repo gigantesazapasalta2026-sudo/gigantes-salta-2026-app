@@ -1,4 +1,4 @@
-// form-bridge.js — Gigantes de Azapa Salta 2026 — FOTOS LOCALES
+// form-bridge.js — Gigantes de Azapa Salta 2026 — FOTOS LOCALES + MENU CON ALBUM
 const GIGANTES = {
   LOGO: "LOGO GIGANTES.jpeg",
   BASE: "https://gigantesazapasalta2026-sudo.github.io/gigantes-salta-2026-app/",
@@ -20,7 +20,8 @@ const GIGANTES = {
     "inscripcion":"ninos2","documentos_carga":"entrenadores","mi_estado":"m10m12",
     "actividades":"tercer","bingos":"fogata","aportes":"estadio","sponsors":"playa",
     "avance":"estadio","galeria_club":"entrenadores","itinerario":"ninos2",
-    "merchandising":"m10m12","directiva":"entrenadores","index":"ninos2","default":"ninos2"
+    "merchandising":"m10m12","directiva":"entrenadores","album_equipo":"m10m12",
+    "index":"ninos2","default":"ninos2"
   }
 };
 
@@ -38,6 +39,7 @@ function injectTopbar(){
   nav.id='gb-drawer';
   nav.innerHTML=`<div class="gb-dh"><strong>Menú</strong><button class="gb-x" onclick="document.getElementById('gb-drawer').classList.remove('open')">✕</button></div>
     <a href="${B}inscripcion.html">🏉 Inscribir jugador</a>
+    <a href="${B}album_equipo.html">⭐ Álbum del equipo</a>
     <a href="${B}documentos_carga.html">📄 Subir documentos</a>
     <a href="${B}mi_estado.html">🔍 Mi estado</a>
     <a href="${B}itinerario.html">🗓 Itinerario</a>
@@ -66,16 +68,13 @@ function injectHeroBg(){
   hero.style.minHeight=hero.style.minHeight||'54vh';
 
   if(!hero.querySelector('.gb-bg')){
-    // Foto de fondo local — siempre funciona
     const bg=document.createElement('div');
     bg.className='gb-bg';
     bg.style.cssText=`position:absolute;inset:0;z-index:0;background-image:url("${encodeURI(fotoFile)}");background-size:cover;background-position:center;`;
 
-    // Overlay oscuro
     const overlay=document.createElement('div');
     overlay.style.cssText='position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,15,20,.35) 0%,rgba(11,15,20,.7) 55%,rgba(11,15,20,.98) 100%)';
 
-    // Video local encima
     const vid=document.createElement('video');
     vid.autoplay=true;vid.muted=true;vid.loop=true;vid.playsInline=true;
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;opacity:.4;';
@@ -85,11 +84,12 @@ function injectHeroBg(){
     hero.insertBefore(vid,hero.firstChild);
     hero.insertBefore(bg,hero.firstChild);
 
-    // Elevar contenido
     Array.from(hero.children).forEach(c=>{
       if(c!==bg&&c!==overlay&&c!==vid){
-        c.style.position='relative';
-        c.style.zIndex='3';
+        if(!c.style.zIndex){
+          c.style.position='relative';
+          c.style.zIndex='3';
+        }
       }
     });
   }
